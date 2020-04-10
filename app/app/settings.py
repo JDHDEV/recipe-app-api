@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    'graphene_django',
     'core',
     'user',
     'recipe',
@@ -71,6 +72,10 @@ TEMPLATES = [
         },
     },
 ]
+
+GRAPHENE = {
+    'SCHEMA': 'app.schema.schema'
+}
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
