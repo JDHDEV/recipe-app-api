@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import Tag, Ingredient, Spot
+from core.models import Tag, Location, Spot
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -12,20 +12,20 @@ class TagSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
 
-class IngredientSerializer(serializers.ModelSerializer):
-    """Serializer for ingredient objects"""
+class LocationSerializer(serializers.ModelSerializer):
+    """Serializer for location objects"""
 
     class Meta:
-        model = Ingredient
+        model = Location
         fields = ('id', 'name')
         read_only_fields = ('id',)
 
 
 class SpotSerializer(serializers.ModelSerializer):
     """Serializer a spot"""
-    ingredients = serializers.PrimaryKeyRelatedField(
+    locations = serializers.PrimaryKeyRelatedField(
         many=True,
-        queryset=Ingredient.objects.all()
+        queryset=Location.objects.all()
     )
     tags = serializers.PrimaryKeyRelatedField(
         many=True,
@@ -35,7 +35,7 @@ class SpotSerializer(serializers.ModelSerializer):
     class Meta:
         model = Spot
         fields = (
-            'id', 'title', 'ingredients', 'tags', 'time_minutes',
+            'id', 'title', 'locations', 'tags', 'time_minutes',
             'price', 'link',
         )
         read_only_fields = ('id',)
@@ -43,7 +43,7 @@ class SpotSerializer(serializers.ModelSerializer):
 
 class SpotDetailSerializer(SpotSerializer):
     """Serialize a spot detail object"""
-    ingredients = IngredientSerializer(many=True, read_only=True)
+    locations = LocationSerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
 
 

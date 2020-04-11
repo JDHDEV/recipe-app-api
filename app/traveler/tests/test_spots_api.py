@@ -10,7 +10,7 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Spot, Tag, Ingredient
+from core.models import Spot, Tag, Location
 
 from traveler.serializers import SpotSerializer, SpotDetailSerializer
 
@@ -33,9 +33,9 @@ def sample_tag(user, name='Main course'):
     return Tag.objects.create(user=user, name=name)
 
 
-def sample_ingredient(user, name='Cinnamon'):
-    """Create and return a sample ingredient"""
-    return Ingredient.objects.create(user=user, name=name)
+def sample_location(user, name='Cinnamon'):
+    """Create and return a sample location"""
+    return Location.objects.create(user=user, name=name)
 
 
 def sample_spot(user, **params):
@@ -108,7 +108,7 @@ class privateSpotApiTests(TestCase):
         """Test viewing a spot detail"""
         spot = sample_spot(user=self.user)
         spot.tags.add(sample_tag(user=self.user))
-        spot.ingredients.add(sample_ingredient(user=self.user))
+        spot.locations.add(sample_location(user=self.user))
 
         url = detail_url(spot.id)
         res = self.client.get(url)
@@ -149,13 +149,13 @@ class privateSpotApiTests(TestCase):
         self.assertIn(tag1, tags)
         self.assertIn(tag2, tags)
 
-    def test_create_spot_with_ingredients(self):
-        """Test creating spot with ingredients"""
-        ingredient1 = sample_ingredient(user=self.user, name='Prawns')
-        ingredient2 = sample_ingredient(user=self.user, name='Ginger')
+    def test_create_spot_with_locations(self):
+        """Test creating spot with locations"""
+        location1 = sample_location(user=self.user, name='Prawns')
+        location2 = sample_location(user=self.user, name='Ginger')
         payload = {
             'title': 'Thai prawn red curry',
-            'ingredients': [ingredient1.id, ingredient2.id],
+            'locations': [location1.id, location2.id],
             'time_minutes': 20,
             'price': 7.00
         }
@@ -163,10 +163,10 @@ class privateSpotApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         spot = Spot.objects.get(id=res.data['id'])
-        ingredients = spot.ingredients.all()
-        self.assertEqual(ingredients.count(), 2)
-        self.assertIn(ingredient1, ingredients)
-        self.assertIn(ingredient2, ingredients)
+        locations = spot.locations.all()
+        self.assertEqual(locations.count(), 2)
+        self.assertIn(location1, locations)
+        self.assertIn(location2, locations)
 
     def test_partial_update_spot(self):
         """Test updating a spot with patch"""
@@ -261,19 +261,19 @@ class SpotImageUploadTests(TestCase):
         self.assertIn(serializer2.data, res.data)
         self.assertNotIn(serializer3.data, res.data)
 
-    def test_filter_spots_by_ingredients(self):
-        """Test returning spots with specific ingredients"""
+    def test_filter_spots_by_locations(self):
+        """Test returning spots with specific locations"""
         spot1 = sample_spot(user=self.user, title='Posh beans on toast')
         spot2 = sample_spot(user=self.user, title='Chicken')
-        ingredient1 = sample_ingredient(user=self.user, name='Feta cheese')
-        ingredient2 = sample_ingredient(user=self.user, name='hicken')
-        spot1.ingredients.add(ingredient1)
-        spot2.ingredients.add(ingredient2)
+        location1 = sample_location(user=self.user, name='Feta cheese')
+        location2 = sample_location(user=self.user, name='hicken')
+        spot1.locations.add(location1)
+        spot2.locations.add(location2)
         spot3 = sample_spot(user=self.user, title='Steak and shrooms')
 
         res = self.client.get(
             SPOTS_URL,
-            {'ingredients': f'{ingredient1.id},{ingredient2.id}'}
+            {'locations': f'{location1.id},{location2.id}'}
         )
 
         serializer1 = SpotSerializer(spot1)

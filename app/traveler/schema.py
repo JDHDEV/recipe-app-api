@@ -1,7 +1,7 @@
 import graphene
 
 from graphene_django.types import DjangoObjectType
-from core.models import Spot, Ingredient
+from core.models import Spot, Location
 
 
 class SpotType(DjangoObjectType):
@@ -14,9 +14,9 @@ class SpotType(DjangoObjectType):
         return "Reasonable" if self.price < 20 else "Expensive"
 
 
-class IngredientType(DjangoObjectType):
+class LocationType(DjangoObjectType):
     class Meta:
-        model = Ingredient
+        model = Location
 
 
 class Query(graphene.ObjectType):

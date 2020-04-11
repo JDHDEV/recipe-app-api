@@ -61,8 +61,8 @@ class Tag(models.Model):
         return self.name
 
 
-class Ingredient(models.Model):
-    """Ingredient to be used in a spot"""
+class Location(models.Model):
+    """Location to be associated with a spot"""
     name = models.CharField(max_length=255)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -83,7 +83,7 @@ class Spot(models.Model):
     time_minutes = models.IntegerField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
     link = models.CharField(max_length=255, blank=True)
-    ingredients = models.ManyToManyField('Ingredient')
+    locations = models.ManyToManyField('Location')
     tags = models.ManyToManyField('Tag')
     image = models.ImageField(null=True, upload_to=spot_image_file_path)
 

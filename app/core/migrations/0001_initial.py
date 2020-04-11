@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Ingredient',
+            name='Location',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                 ('price', models.DecimalField(decimal_places=2, max_digits=5)),
                 ('link', models.CharField(blank=True, max_length=255)),
                 ('image', models.ImageField(null=True, upload_to=core.models.spot_image_file_path)),
-                ('ingredients', models.ManyToManyField(to='core.Ingredient')),
+                ('locations', models.ManyToManyField(to='core.Location')),
             ],
         ),
         migrations.CreateModel(
