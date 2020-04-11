@@ -74,12 +74,12 @@ class Location(models.Model):
 
 
 class Spot(models.Model):
-    """Spot object"""
+    """Spot object, a Yocal-Spot"""
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    title = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
     time_minutes = models.IntegerField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
     link = models.CharField(max_length=255, blank=True)
@@ -88,4 +88,4 @@ class Spot(models.Model):
     image = models.ImageField(null=True, upload_to=spot_image_file_path)
 
     def __str__(self):
-        return self.title
+        return self.name

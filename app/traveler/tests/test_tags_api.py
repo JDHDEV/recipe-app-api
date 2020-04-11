@@ -39,8 +39,8 @@ class PrivateTagsApiTests(TestCase):
 
     def test_retrieve_tags(self):
         """Test retrieving tags"""
-        Tag.objects.create(user=self.user, name='Vegan')
-        Tag.objects.create(user=self.user, name='Dessert')
+        Tag.objects.create(user=self.user, name='Social')
+        Tag.objects.create(user=self.user, name='Dance')
 
         res = self.client.get(TAGS_URL)
 
@@ -56,7 +56,7 @@ class PrivateTagsApiTests(TestCase):
             'test2@gmail.com',
             'password123'
         )
-        Tag.objects.create(user=user2, name='Fruity')
+        Tag.objects.create(user=user2, name='Fine Dining')
         tag = Tag.objects.create(user=self.user, name='Comfort Food')
 
         res = self.client.get(TAGS_URL)
@@ -85,12 +85,12 @@ class PrivateTagsApiTests(TestCase):
 
     def test_retrieve_tags_assigned_to_spots(self):
         """Test filtering tags by those assigned to spots"""
-        tag1 = Tag.objects.create(user=self.user, name='Breakfast')
-        tag2 = Tag.objects.create(user=self.user, name='Lunch')
+        tag1 = Tag.objects.create(user=self.user, name='Snow')
+        tag2 = Tag.objects.create(user=self.user, name='Cold Weather')
         spot = Spot.objects.create(
-            title='coriander eggs on toast',
+            name='Big Bear Resort',
             time_minutes=10,
-            price=5.00,
+            price=200.00,
             user=self.user
         )
         spot.tags.add(tag1)
@@ -104,17 +104,17 @@ class PrivateTagsApiTests(TestCase):
 
     def test_retrieve_tags_assigned_unique(self):
         """Test filtering tags by assigned returns unique items"""
-        tag = Tag.objects.create(user=self.user, name='Breakfast')
-        Tag.objects.create(user=self.user, name='Lunch')
+        tag = Tag.objects.create(user=self.user, name='Adult')
+        Tag.objects.create(user=self.user, name='NSFW')
         spot1 = Spot.objects.create(
-            title='Pankcakes',
+            name='Strip Club',
             time_minutes=5,
             price=3.00,
             user=self.user
         )
         spot1.tags.add(tag)
         spot2 = Spot.objects.create(
-            title='Porridge',
+            name='Tattoo Parlor',
             time_minutes=3,
             price=2.00,
             user=self.user

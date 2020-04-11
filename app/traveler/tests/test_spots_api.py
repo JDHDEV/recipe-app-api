@@ -28,12 +28,12 @@ def detail_url(spot_id):
     return reverse('traveler:spot-detail', args=[spot_id])
 
 
-def sample_tag(user, name='Main course'):
+def sample_tag(user, name='Social'):
     """Create and return a sample tag"""
     return Tag.objects.create(user=user, name=name)
 
 
-def sample_location(user, name='Cinnamon'):
+def sample_location(user, name='San Francisco'):
     """Create and return a sample location"""
     return Location.objects.create(user=user, name=name)
 
@@ -41,7 +41,7 @@ def sample_location(user, name='Cinnamon'):
 def sample_spot(user, **params):
     """Create and return a sample spot"""
     defaults = {
-        'title': 'Sample spot',
+        'name': 'Sample spot',
         'time_minutes': 10,
         'price': 5.00
     }
@@ -119,9 +119,9 @@ class privateSpotApiTests(TestCase):
     def test_create_basic_spot(self):
         """Test creating spot"""
         payload = {
-            'title': 'Chocolate cheesecake',
+            'name': 'Small Cafe',
             'time_minutes': 30,
-            'price': 5.00
+            'price': 10.00
         }
         res = self.client.post(SPOTS_URL, payload)
 
@@ -132,10 +132,10 @@ class privateSpotApiTests(TestCase):
 
     def test_create_spot_with_tags(self):
         """Test creating a spot with tags"""
-        tag1 = sample_tag(user=self.user, name='Vegan')
-        tag2 = sample_tag(user=self.user, name='Dessert')
+        tag1 = sample_tag(user=self.user, name='Surf')
+        tag2 = sample_tag(user=self.user, name='Swim')
         payload = {
-            'title': 'Avocado lime cake',
+            'name': 'Stand Up Paddleboarding',
             'tags': [tag1.id, tag2.id],
             'time_minutes': 60,
             'price': 20.00
@@ -151,13 +151,13 @@ class privateSpotApiTests(TestCase):
 
     def test_create_spot_with_locations(self):
         """Test creating spot with locations"""
-        location1 = sample_location(user=self.user, name='Prawns')
-        location2 = sample_location(user=self.user, name='Ginger')
+        location1 = sample_location(user=self.user, name='Columbia')
+        location2 = sample_location(user=self.user, name='Medina')
         payload = {
-            'title': 'Thai prawn red curry',
+            'name': 'Salsa Dancing',
             'locations': [location1.id, location2.id],
             'time_minutes': 20,
-            'price': 7.00
+            'price': 10.00
         }
         res = self.client.post(SPOTS_URL, payload)
 
@@ -172,14 +172,14 @@ class privateSpotApiTests(TestCase):
         """Test updating a spot with patch"""
         spot = sample_spot(user=self.user)
         spot.tags.add(sample_tag(user=self.user))
-        new_tag = sample_tag(user=self.user, name='Curry')
+        new_tag = sample_tag(user=self.user, name='Music')
 
-        payload = {'title': 'Chicken tikka', 'tags': [new_tag.id]}
+        payload = {'name': 'Concert Venue', 'tags': [new_tag.id]}
         url = detail_url(spot.id)
         self.client.patch(url, payload)
 
         spot.refresh_from_db()
-        self.assertEqual(spot.title, payload['title'])
+        self.assertEqual(spot.name, payload['name'])
         tags = spot.tags.all()
         self.assertEqual(len(tags), 1)
         self.assertIn(new_tag, tags)
@@ -189,15 +189,15 @@ class privateSpotApiTests(TestCase):
         spot = sample_spot(user=self.user)
         spot.tags.add(sample_tag(user=self.user))
         payload = {
-            'title': 'Spaaaa',
-            'time_minutes': 25,
+            'name': 'Spa',
+            'time_minutes': 60,
             'price': 5.00
         }
         url = detail_url(spot.id)
         self.client.put(url, payload)
 
         spot.refresh_from_db()
-        self.assertEqual(spot.title, payload['title'])
+        self.assertEqual(spot.name, payload['name'])
         self.assertEqual(spot.time_minutes, payload['time_minutes'])
         self.assertEqual(spot.price, payload['price'])
         tags = spot.tags.all()
@@ -219,7 +219,7 @@ class SpotImageUploadTests(TestCase):
         self.spot.image.delete()
 
     def test_upload_image_to_spot(self):
-        """Test uploading an email to spot"""
+        """Test uploading an image to spot"""
         url = image_upload_url(self.spot.id)
         with tempfile.NamedTemporaryFile(suffix='.jpg') as ntf:
             img = Image.new('RGB', (10, 10))
@@ -241,13 +241,13 @@ class SpotImageUploadTests(TestCase):
 
     def test_filter_spots_by_tags(self):
         """Test returning spots with specific tags"""
-        spot1 = sample_spot(user=self.user, title='Thai vegtable curry')
-        spot2 = sample_spot(user=self.user, title='Aubergine with tahini')
-        tag1 = sample_tag(user=self.user, name='Vegan')
-        tag2 = sample_tag(user=self.user, name='Vegetarian')
+        spot1 = sample_spot(user=self.user, name='Dance Club')
+        spot2 = sample_spot(user=self.user, name='Concert Hall')
+        tag1 = sample_tag(user=self.user, name='Dance')
+        tag2 = sample_tag(user=self.user, name='Music')
         spot1.tags.add(tag1)
         spot2.tags.add(tag2)
-        spot3 = sample_spot(user=self.user, title='Fish and chips')
+        spot3 = sample_spot(user=self.user, name='Small Diner')
 
         res = self.client.get(
             SPOTS_URL,
@@ -263,13 +263,13 @@ class SpotImageUploadTests(TestCase):
 
     def test_filter_spots_by_locations(self):
         """Test returning spots with specific locations"""
-        spot1 = sample_spot(user=self.user, title='Posh beans on toast')
-        spot2 = sample_spot(user=self.user, title='Chicken')
-        location1 = sample_location(user=self.user, name='Feta cheese')
-        location2 = sample_location(user=self.user, name='hicken')
+        spot1 = sample_spot(user=self.user, name='Zip Line')
+        spot2 = sample_spot(user=self.user, name='Rock Climbing')
+        location1 = sample_location(user=self.user, name='Costa Rica')
+        location2 = sample_location(user=self.user, name='South America')
         spot1.locations.add(location1)
         spot2.locations.add(location2)
-        spot3 = sample_spot(user=self.user, title='Steak and shrooms')
+        spot3 = sample_spot(user=self.user, name='Local Bar')
 
         res = self.client.get(
             SPOTS_URL,

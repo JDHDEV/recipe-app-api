@@ -35,7 +35,7 @@ class SpotSerializer(serializers.ModelSerializer):
     class Meta:
         model = Spot
         fields = (
-            'id', 'title', 'locations', 'tags', 'time_minutes',
+            'id', 'name', 'locations', 'tags', 'time_minutes',
             'price', 'link',
         )
         read_only_fields = ('id',)

@@ -51,7 +51,7 @@ class ModelTests(TestCase):
         """Test the tag string representation"""
         tag = models.Tag.objects.create(
             user=sample_user(),
-            name='Vegan'
+            name='Surfing'
         )
 
         self.assertEqual(str(tag), tag.name)
@@ -60,7 +60,7 @@ class ModelTests(TestCase):
         """Test the location string representation"""
         location = models.Location.objects.create(
             user=sample_user(),
-            name='Cucumber'
+            name='Hawaii'
         )
 
         self.assertEqual(str(location), location.name)
@@ -69,12 +69,12 @@ class ModelTests(TestCase):
         """Test the spot string representation"""
         spot = models.Spot.objects.create(
             user=sample_user(),
-            title='Steak and mushroom sauce',
+            name='Surf Lessons',
             time_minutes=5,
             price=5.00
         )
 
-        self.assertEqual(str(spot), spot.title)
+        self.assertEqual(str(spot), spot.name)
 
     @patch('uuid.uuid4')
     def test_spot_file_name_uuid(self, mock_uuid):

@@ -26,8 +26,8 @@ class DRFAuthenticatedGraphQLView(GraphQLView):
 
 
 class BaseSpotAttrViewSet(viewsets.GenericViewSet,
-                            mixins.ListModelMixin,
-                            mixins.CreateModelMixin):
+                          mixins.ListModelMixin,
+                          mixins.CreateModelMixin):
     """Base viewset for user owner spot attributes"""
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)

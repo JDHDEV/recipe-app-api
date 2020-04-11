@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
             name='Spot',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=255)),
+                ('name', models.CharField(max_length=255)),
                 ('time_minutes', models.IntegerField()),
                 ('price', models.DecimalField(decimal_places=2, max_digits=5)),
                 ('link', models.CharField(blank=True, max_length=255)),

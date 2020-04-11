@@ -14,9 +14,9 @@ from core.models import Spot
 def sample_spot(user, **params):
     """Create and return a sample spot"""
     defaults = {
-        'title': 'Sample spot',
-        'time_minutes': 10,
-        'price': 5.00
+        'name': 'Sample spot',
+        'time_minutes': 60,
+        'price': 20.00
     }
     defaults.update(params)
 
@@ -64,7 +64,7 @@ class privateGraphQLApiTests(GraphQLTestCase):
 
         client = Client(schema)
         executed = client.execute(
-            '''{ allSpots { title } } ''', context=request
+            '''{ allSpots { name } } ''', context=request
         )
 
         self.assertIn('data', executed)
@@ -73,5 +73,5 @@ class privateGraphQLApiTests(GraphQLTestCase):
         self.assertIn('allSpots', data)
         allSpots = data.get('allSpots')
 
-        self.assertEqual(allSpots[0].get('title'), "Sample spot")
-        self.assertEqual(allSpots[1].get('title'), "Sample spot")
+        self.assertEqual(allSpots[0].get('name'), "Sample spot")
+        self.assertEqual(allSpots[1].get('name'), "Sample spot")

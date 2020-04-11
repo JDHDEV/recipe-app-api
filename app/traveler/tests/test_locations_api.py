@@ -39,8 +39,8 @@ class PrivateLocationsApiTests(TestCase):
 
     def test_retrieve_location_list(self):
         """Test retrieving a list of locations"""
-        Location.objects.create(user=self.user, name='Kale')
-        Location.objects.create(user=self.user, name='Salt')
+        Location.objects.create(user=self.user, name='Hawaii')
+        Location.objects.create(user=self.user, name='Rome')
 
         res = self.client.get(LOCATIONS_URL)
 
@@ -55,9 +55,9 @@ class PrivateLocationsApiTests(TestCase):
             'test2@gmail.com',
             'testpass'
         )
-        Location.objects.create(user=user2, name='Vinegar')
+        Location.objects.create(user=user2, name='Paris')
 
-        location = Location.objects.create(user=self.user, name='Tumeric')
+        location = Location.objects.create(user=self.user, name='USA')
 
         res = self.client.get(LOCATIONS_URL)
 
@@ -67,7 +67,7 @@ class PrivateLocationsApiTests(TestCase):
 
     def test_create_location_successful(self):
         """Test create a new location"""
-        payload = {'name': 'Cabbage'}
+        payload = {'name': 'North Shore'}
         self.client.post(LOCATIONS_URL, payload)
 
         exists = Location.objects.filter(
@@ -86,15 +86,15 @@ class PrivateLocationsApiTests(TestCase):
     def test_retrieve_locations_assigned_to_spots(self):
         """Test filtering locations by those assigned to spots"""
         location1 = Location.objects.create(
-            user=self.user, name='Apples'
+            user=self.user, name='Orange County'
         )
         location2 = Location.objects.create(
-            user=self.user, name='Turkey'
+            user=self.user, name='Cresent Bay'
         )
         spot = Spot.objects.create(
-            title='Apple crumble',
-            time_minutes=5,
-            price=10.00,
+            name='Skim Board Lessons',
+            time_minutes=30,
+            price=15.00,
             user=self.user
         )
         spot.locations.add(location1)
@@ -109,22 +109,22 @@ class PrivateLocationsApiTests(TestCase):
     def test_retrieve_locations_assigned_unique(self):
         """Test filtering locations by assigned returns unique items"""
         location = Location.objects.create(
-            user=self.user, name='Eggs'
+            user=self.user, name='California'
         )
         Location.objects.create(
-            user=self.user, name='Cheese'
+            user=self.user, name='Los Angeles'
         )
         spot1 = Spot.objects.create(
-            title='Eggs scrambled',
-            time_minutes=5,
-            price=3.00,
+            name='Dance Club',
+            time_minutes=120,
+            price=45.00,
             user=self.user
         )
         spot1.locations.add(location)
         spot2 = Spot.objects.create(
-            title='Eggs on toast',
+            name='Weed Clinic',
             time_minutes=20,
-            price=2.00,
+            price=65.00,
             user=self.user
         )
         spot2.locations.add(location)

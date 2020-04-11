@@ -22,7 +22,7 @@ class LocationType(DjangoObjectType):
 class Query(graphene.ObjectType):
     all_spots = graphene.List(SpotType)
     spot = graphene.Field(SpotType, id=graphene.Int(),
-                            title=graphene.String())
+                          name=graphene.String())
 
     def resolve_all_spots(self, info, **kwargs):
         user = info.context.user
@@ -45,9 +45,9 @@ class Query(graphene.ObjectType):
         if id is not None:
             return Spot.objects.get(pk=id)
 
-        title = kwargs.get('title')
+        name = kwargs.get('name')
 
-        if title is not None:
-            return Spot.objects.get(title=title)
+        if name is not None:
+            return Spot.objects.get(name=name)
 
         return None
