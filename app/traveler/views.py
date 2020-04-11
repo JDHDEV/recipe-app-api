@@ -6,7 +6,7 @@ from rest_framework import viewsets, mixins, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import Tag, Ingredient, Spot
+from core.models import Tag, Location, Spot
 
 from traveler import serializers
 
@@ -56,10 +56,10 @@ class TagViewSet(BaseSpotAttrViewSet):
     serializer_class = serializers.TagSerializer
 
 
-class IngredientViewSet(BaseSpotAttrViewSet):
-    """Manage ingredients in the database"""
-    queryset = Ingredient.objects.all()
-    serializer_class = serializers.IngredientSerializer
+class LocationViewSet(BaseSpotAttrViewSet):
+    """Manage locations in the database"""
+    queryset = Location.objects.all()
+    serializer_class = serializers.LocationSerializer
 
 
 class SpotViewSet(viewsets.ModelViewSet):
@@ -76,14 +76,14 @@ class SpotViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Retrieve the spots for the authenticated user"""
         tags = self.request.query_params.get('tags')
-        ingredients = self.request.query_params.get('ingredients')
+        locations = self.request.query_params.get('locations')
         queryset = self.queryset
         if tags:
             tag_ids = self._params_to_ints(tags)
             queryset = queryset.filter(tags__id__in=tag_ids)
-        if ingredients:
-            ingredient_ids = self._params_to_ints(ingredients)
-            queryset = queryset.filter(ingredients__id__in=ingredient_ids)
+        if locations:
+            location_ids = self._params_to_ints(locations)
+            queryset = queryset.filter(locations__id__in=location_ids)
 
         return queryset.filter(user=self.request.user)
 
