@@ -65,23 +65,23 @@ class ModelTests(TestCase):
 
         self.assertEqual(str(ingredient), ingredient.name)
 
-    def test_recipe_str(self):
-        """Test the recipe string representation"""
-        recipe = models.Recipe.objects.create(
+    def test_spot_str(self):
+        """Test the spot string representation"""
+        spot = models.Spot.objects.create(
             user=sample_user(),
             title='Steak and mushroom sauce',
             time_minutes=5,
             price=5.00
         )
 
-        self.assertEqual(str(recipe), recipe.title)
+        self.assertEqual(str(spot), spot.title)
 
     @patch('uuid.uuid4')
-    def test_recipe_file_name_uuid(self, mock_uuid):
+    def test_spot_file_name_uuid(self, mock_uuid):
         """Test that image is saved in the correct location"""
         uuid = 'test-uuid'
         mock_uuid.return_value = uuid
-        file_path = models.recipe_image_file_path(None, 'myimage.jpg')
+        file_path = models.spot_image_file_path(None, 'myimage.jpg')
 
-        exp_path = f'uploads/recipe/{uuid}.jpg'
+        exp_path = f'uploads/spot/{uuid}.jpg'
         self.assertEqual(file_path, exp_path)

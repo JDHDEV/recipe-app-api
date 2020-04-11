@@ -5,12 +5,12 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Tag, Recipe
+from core.models import Tag, Spot
 
-from recipe.serializers import TagSerializer
+from traveler.serializers import TagSerializer
 
 
-TAGS_URL = reverse('recipe:tag-list')
+TAGS_URL = reverse('traveler:tag-list')
 
 
 class PublicTagsApiTests(TestCase):
@@ -83,17 +83,17 @@ class PrivateTagsApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_retrieve_tags_assigned_to_recipes(self):
-        """Test filtering tags by those assigned to recipes"""
+    def test_retrieve_tags_assigned_to_spots(self):
+        """Test filtering tags by those assigned to spots"""
         tag1 = Tag.objects.create(user=self.user, name='Breakfast')
         tag2 = Tag.objects.create(user=self.user, name='Lunch')
-        recipe = Recipe.objects.create(
+        spot = Spot.objects.create(
             title='coriander eggs on toast',
             time_minutes=10,
             price=5.00,
             user=self.user
         )
-        recipe.tags.add(tag1)
+        spot.tags.add(tag1)
 
         res = self.client.get(TAGS_URL, {'assigned_only': 1})
 
@@ -106,20 +106,20 @@ class PrivateTagsApiTests(TestCase):
         """Test filtering tags by assigned returns unique items"""
         tag = Tag.objects.create(user=self.user, name='Breakfast')
         Tag.objects.create(user=self.user, name='Lunch')
-        recipe1 = Recipe.objects.create(
+        spot1 = Spot.objects.create(
             title='Pankcakes',
             time_minutes=5,
             price=3.00,
             user=self.user
         )
-        recipe1.tags.add(tag)
-        recipe2 = Recipe.objects.create(
+        spot1.tags.add(tag)
+        spot2 = Spot.objects.create(
             title='Porridge',
             time_minutes=3,
             price=2.00,
             user=self.user
         )
-        recipe2.tags.add(tag)
+        spot2.tags.add(tag)
 
         res = self.client.get(TAGS_URL, {'assigned_only': 1})
 

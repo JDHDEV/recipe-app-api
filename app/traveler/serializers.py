@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from core.models import Tag, Ingredient, Recipe
+from core.models import Tag, Ingredient, Spot
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -21,8 +21,8 @@ class IngredientSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
 
-class RecipeSerializer(serializers.ModelSerializer):
-    """Serializer a recipe"""
+class SpotSerializer(serializers.ModelSerializer):
+    """Serializer a spot"""
     ingredients = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=Ingredient.objects.all()
@@ -33,7 +33,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        model = Recipe
+        model = Spot
         fields = (
             'id', 'title', 'ingredients', 'tags', 'time_minutes',
             'price', 'link',
@@ -41,16 +41,16 @@ class RecipeSerializer(serializers.ModelSerializer):
         read_only_fields = ('id',)
 
 
-class RecipeDetailSerializer(RecipeSerializer):
-    """Serialize a recipe detail object"""
+class SpotDetailSerializer(SpotSerializer):
+    """Serialize a spot detail object"""
     ingredients = IngredientSerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
 
 
-class RecipeImageSerializer(serializers.ModelSerializer):
-    """Serializer for uploading images to recipes"""
+class SpotImageSerializer(serializers.ModelSerializer):
+    """Serializer for uploading images to spots"""
 
     class Meta:
-        model = Recipe
+        model = Spot
         fields = ('id', 'image')
         read_only_fields = ('id',)

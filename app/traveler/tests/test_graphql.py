@@ -8,19 +8,19 @@ from django.test import RequestFactory
 
 from rest_framework import status
 
-from core.models import Recipe
+from core.models import Spot
 
 
-def sample_recipe(user, **params):
-    """Create and return a sample recipe"""
+def sample_spot(user, **params):
+    """Create and return a sample spot"""
     defaults = {
-        'title': 'Sample recipe',
+        'title': 'Sample spot',
         'time_minutes': 10,
         'price': 5.00
     }
     defaults.update(params)
 
-    return Recipe.objects.create(user=user, **defaults)
+    return Spot.objects.create(user=user, **defaults)
 
 
 class PublicGraphQLApiTests(GraphQLTestCase):
@@ -51,10 +51,10 @@ class privateGraphQLApiTests(GraphQLTestCase):
             'testpass'
         )
 
-    def test_allrecipes_graphql(self):
-        """Test retrieving recipes with graphql"""
-        sample_recipe(user=self.user)
-        sample_recipe(user=self.user)
+    def test_allspots_graphql(self):
+        """Test retrieving spots with graphql"""
+        sample_spot(user=self.user)
+        sample_spot(user=self.user)
 
         request = self.factory.get('graphql/')
 
@@ -64,14 +64,14 @@ class privateGraphQLApiTests(GraphQLTestCase):
 
         client = Client(schema)
         executed = client.execute(
-            '''{ allRecipes { title } } ''', context=request
+            '''{ allSpots { title } } ''', context=request
         )
 
         self.assertIn('data', executed)
         data = executed.get('data')
 
-        self.assertIn('allRecipes', data)
-        allRecipes = data.get('allRecipes')
+        self.assertIn('allSpots', data)
+        allSpots = data.get('allSpots')
 
-        self.assertEqual(allRecipes[0].get('title'), "Sample recipe")
-        self.assertEqual(allRecipes[1].get('title'), "Sample recipe")
+        self.assertEqual(allSpots[0].get('title'), "Sample spot")
+        self.assertEqual(allSpots[1].get('title'), "Sample spot")

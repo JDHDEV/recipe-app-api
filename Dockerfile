@@ -1,5 +1,5 @@
  FROM python:3.7-alpine
- MAINTAINER JDHuntDev
+ MAINTAINER YocalDevTeam
 
  ENV PYTHONUNBUFFERED 1
 

@@ -5,12 +5,12 @@ from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Ingredient, Recipe
+from core.models import Ingredient, Spot
 
-from recipe.serializers import IngredientSerializer
+from traveler.serializers import IngredientSerializer
 
 
-INGREDIENTS_URL = reverse('recipe:ingredient-list')
+INGREDIENTS_URL = reverse('traveler:ingredient-list')
 
 
 class PublicIngredientsApiTests(TestCase):
@@ -83,21 +83,21 @@ class PrivateIngredientsApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_retrieve_ingredients_assigned_to_recipes(self):
-        """Test filtering ingredients by those assigned to recipes"""
+    def test_retrieve_ingredients_assigned_to_spots(self):
+        """Test filtering ingredients by those assigned to spots"""
         ingredient1 = Ingredient.objects.create(
             user=self.user, name='Apples'
         )
         ingredient2 = Ingredient.objects.create(
             user=self.user, name='Turkey'
         )
-        recipe = Recipe.objects.create(
+        spot = Spot.objects.create(
             title='Apple crumble',
             time_minutes=5,
             price=10.00,
             user=self.user
         )
-        recipe.ingredients.add(ingredient1)
+        spot.ingredients.add(ingredient1)
 
         res = self.client.get(INGREDIENTS_URL, {'assigned_only': 1})
 
@@ -114,20 +114,20 @@ class PrivateIngredientsApiTests(TestCase):
         Ingredient.objects.create(
             user=self.user, name='Cheese'
         )
-        recipe1 = Recipe.objects.create(
+        spot1 = Spot.objects.create(
             title='Eggs scrambled',
             time_minutes=5,
             price=3.00,
             user=self.user
         )
-        recipe1.ingredients.add(ingredient)
-        recipe2 = Recipe.objects.create(
+        spot1.ingredients.add(ingredient)
+        spot2 = Spot.objects.create(
             title='Eggs on toast',
             time_minutes=20,
             price=2.00,
             user=self.user
         )
-        recipe2.ingredients.add(ingredient)
+        spot2.ingredients.add(ingredient)
 
         res = self.client.get(INGREDIENTS_URL, {'assigned_only': 1})
 

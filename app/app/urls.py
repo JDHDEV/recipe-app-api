@@ -18,13 +18,13 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 from graphene_django.views import GraphQLView
-from recipe import schema
-from recipe.views import DRFAuthenticatedGraphQLView
+from traveler import schema
+from traveler.views import DRFAuthenticatedGraphQLView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/user/', include('user.urls')),
-    path('api/recipe/', include('recipe.urls')),
+    path('api/traveler/', include('traveler.urls')),
     path('publicgraphql/', GraphQLView.as_view(graphiql=True)),
     path('graphql/', DRFAuthenticatedGraphQLView.as_view(graphiql=True,
          schema=schema))

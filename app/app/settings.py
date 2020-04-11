@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'graphene_django',
     'core',
     'user',
-    'recipe',
+    'traveler',
 ]
 
 MIDDLEWARE = [

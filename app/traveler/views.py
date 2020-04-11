@@ -6,9 +6,9 @@ from rest_framework import viewsets, mixins, status
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import Tag, Ingredient, Recipe
+from core.models import Tag, Ingredient, Spot
 
-from recipe import serializers
+from traveler import serializers
 
 
 class DRFAuthenticatedGraphQLView(GraphQLView):
@@ -25,10 +25,10 @@ class DRFAuthenticatedGraphQLView(GraphQLView):
         return view
 
 
-class BaseRecipeAttrViewSet(viewsets.GenericViewSet,
+class BaseSpotAttrViewSet(viewsets.GenericViewSet,
                             mixins.ListModelMixin,
                             mixins.CreateModelMixin):
-    """Base viewset for user owner recipe attributes"""
+    """Base viewset for user owner spot attributes"""
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
@@ -39,42 +39,42 @@ class BaseRecipeAttrViewSet(viewsets.GenericViewSet,
         )
         queryset = self.queryset
         if assigned_only:
-            queryset = queryset.filter(recipe__isnull=False)
+            queryset = queryset.filter(spot__isnull=False)
 
         return queryset.filter(
             user=self.request.user
         ).order_by('-name').distinct()
 
     def perform_create(self, serializer):
-        """Create a new Recipe Attr"""
+        """Create a new Spot Attr"""
         serializer.save(user=self.request.user)
 
 
-class TagViewSet(BaseRecipeAttrViewSet):
+class TagViewSet(BaseSpotAttrViewSet):
     """Manage tags in the database"""
     queryset = Tag.objects.all()
     serializer_class = serializers.TagSerializer
 
 
-class IngredientViewSet(BaseRecipeAttrViewSet):
+class IngredientViewSet(BaseSpotAttrViewSet):
     """Manage ingredients in the database"""
     queryset = Ingredient.objects.all()
     serializer_class = serializers.IngredientSerializer
 
 
-class RecipeViewSet(viewsets.ModelViewSet):
-    """Manage Recipes in the database"""
+class SpotViewSet(viewsets.ModelViewSet):
+    """Manage Spots in the database"""
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
-    queryset = Recipe.objects.all()
-    serializer_class = serializers.RecipeSerializer
+    queryset = Spot.objects.all()
+    serializer_class = serializers.SpotSerializer
 
     def _params_to_ints(self, qs):
         """Convert a  list of string IDs to a list of integers"""
         return [int(str_id) for str_id in qs.split(',')]
 
     def get_queryset(self):
-        """Retrieve the recipes for the authenticated user"""
+        """Retrieve the spots for the authenticated user"""
         tags = self.request.query_params.get('tags')
         ingredients = self.request.query_params.get('ingredients')
         queryset = self.queryset
@@ -90,22 +90,22 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         """Return appropriate serializer class"""
         if self.action == 'retrieve':
-            return serializers.RecipeDetailSerializer
+            return serializers.SpotDetailSerializer
         elif self.action == 'upload_image':
-            return serializers.RecipeImageSerializer
+            return serializers.SpotImageSerializer
 
         return self.serializer_class
 
     def perform_create(self, serializer):
-        """Create a new recipe"""
+        """Create a new spot"""
         serializer.save(user=self.request.user)
 
     @action(methods=['POST'], detail=True, url_path='upload-image')
     def upload_image(self, request, pk=None):
-        """Upload an image to a recipe"""
-        recipe = self.get_object()
+        """Upload an image to a spot"""
+        spot = self.get_object()
         serializer = self.get_serializer(
-            recipe,
+            spot,
             data=request.data
         )
 

@@ -1,12 +1,12 @@
 import graphene
 
 from graphene_django.types import DjangoObjectType
-from core.models import Recipe, Ingredient
+from core.models import Spot, Ingredient
 
 
-class RecipeType(DjangoObjectType):
+class SpotType(DjangoObjectType):
     class Meta:
-        model = Recipe
+        model = Spot
 
     price_rating = graphene.String()
 
@@ -20,11 +20,11 @@ class IngredientType(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
-    all_recipes = graphene.List(RecipeType)
-    recipe = graphene.Field(RecipeType, id=graphene.Int(),
+    all_spots = graphene.List(SpotType)
+    spot = graphene.Field(SpotType, id=graphene.Int(),
                             title=graphene.String())
 
-    def resolve_all_recipes(self, info, **kwargs):
+    def resolve_all_spots(self, info, **kwargs):
         user = info.context.user
         if not user.is_authenticated:
             raise Exception('Auth Fail')
@@ -35,19 +35,19 @@ class Query(graphene.ObjectType):
         #)
         #queryset = self.queryset
         #if assigned_only:
-        #    queryset = queryset.filter(recipe__isnull=False)
+        #    queryset = queryset.filter(spot__isnull=False)
 
-        return Recipe.objects.all()
+        return Spot.objects.all()
 
-    def resolve_recipe(self, info, **kwargs):
+    def resolve_spot(self, info, **kwargs):
         id = kwargs.get('id')
 
         if id is not None:
-            return Recipe.objects.get(pk=id)
+            return Spot.objects.get(pk=id)
 
         title = kwargs.get('title')
 
         if title is not None:
-            return Recipe.objects.get(title=title)
+            return Spot.objects.get(title=title)
 
         return None

@@ -1,8 +1,8 @@
 import graphene
-import recipe.schema
+import traveler.schema
 
 
-class Query(recipe.schema.Query, graphene.ObjectType):
+class Query(traveler.schema.Query, graphene.ObjectType):
     pass
 
 

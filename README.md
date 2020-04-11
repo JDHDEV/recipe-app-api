@@ -1,2 +1,2 @@
-# recipe-app-api
-recipe app api source code
+# yocal-app-api
+yocal app api source code
